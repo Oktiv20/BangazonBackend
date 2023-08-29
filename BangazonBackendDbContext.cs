@@ -69,10 +69,10 @@ public class BangazonBackendDbContext : DbContext
 
         modelBuilder.Entity<Order>().HasData(new Order[]
         {
-            new Order {Id = 1, UserId = 1, Completed = true, PaymentType = "Credit Card", TotalPrice = 499.99m },
-            new Order {Id = 2, UserId = 2, Completed = true, PaymentType = "PayPal", TotalPrice = 299.99m },
-            new Order {Id = 3, UserId = 3, Completed = true, PaymentType = "Debit Card", TotalPrice = 79.99m},
-            new Order {Id = 4, UserId = 3, Completed = true, PaymentType = "Gift Card", TotalPrice = 799.99m},
+            new Order {Id = 1, UserId = 1, ProductId = 1, Completed = true, PaymentType = "Credit Card", TotalPrice = 499.99m },
+            new Order {Id = 2, UserId = 2, ProductId = 2, Completed = true, PaymentType = "PayPal", TotalPrice = 299.99m },
+            new Order {Id = 3, UserId = 3, ProductId = 3, Completed = true, PaymentType = "Debit Card", TotalPrice = 79.99m},
+            new Order {Id = 4, UserId = 3, ProductId = 4, Completed = true, PaymentType = "Gift Card", TotalPrice = 799.99m},
         });
 
         modelBuilder.Entity<OrderedProduct>().HasData(new OrderedProduct[]
