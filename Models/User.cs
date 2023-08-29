@@ -16,6 +16,5 @@ namespace BangazonBackend.Models
         public string? Address { get; set; }
         [Required]
         public bool? IsSeller { get; set; }
-        //public List<Order> Orders { get; set; }
     }
 }
