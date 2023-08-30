@@ -1,5 +1,6 @@
 using BangazonBackend.Models;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -175,7 +176,7 @@ app.MapDelete("/api/products/{id}", (BangazonBackendDbContext db, int id) =>
 
 // GET ORDERS
 
-app.MapGet("/api/orders", (BangazonBackendDbContext db, int id) =>
+app.MapGet("/api/orders", (BangazonBackendDbContext db) =>
 {
     return db.Orders.ToList();
 });
@@ -191,6 +192,35 @@ app.MapGet("/api/orders/{id}", (BangazonBackendDbContext db, int id) =>
         return Results.NotFound();
     }
     return Results.Ok(orders);
+});
+
+
+// GET ORDER WITH PRODUCTS BY ORDER ID
+
+app.MapGet("/api/orders/{orderId}/products", async (int orderId, BangazonBackendDbContext db) =>
+{
+    var products = await db.OrderedProducts
+        .Where(op => op.OrderId == orderId)
+        .Select(op => op.Product)
+        .ToListAsync();
+
+    return Results.Ok(products);
+});
+
+
+// ADD PRODUCT TO AN ORDER
+
+app.MapPost("/api/orders/{id}/products", (BangazonBackendDbContext db, int orderId, int productId) =>
+{
+    Order order = db.Orders.Include(o => o.Products).SingleOrDefault(o => o.Id == orderId);
+    if (order == null)
+    {
+        return Results.NotFound();
+    }
+    Product prodToAdd = db.Products.FirstOrDefault(p => p.Id == productId);
+    order.Products.Add(prodToAdd);
+    db.SaveChanges();
+    return Results.Created($"/api/orders/{orderId}/products/{prodToAdd.Id}", prodToAdd);
 });
 
 
@@ -218,6 +248,45 @@ app.MapDelete("/api/orders/{id}", (BangazonBackendDbContext db, int id) =>
     return Results.Ok(deleteOrder);
 });
 
+
+
+// PRODUCT TYPES
+
+
+// GET PRODUCTS
+
+app.MapGet("/api/productTypes", (BangazonBackendDbContext db) =>
+{
+    return db.ProductTypes.ToList();
+});
+
+
+// GET PRODUCT TYPES BY ID
+
+app.MapGet("/api/productTypes/{id}", (BangazonBackendDbContext db, int id) =>
+{
+    ProductType productType = db.ProductTypes.SingleOrDefault(pt => pt.Id == id);
+    if (productType == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(productType);
+});
+
+
+// DELETE PRODUCT TYPES
+
+app.MapDelete("/api/productTypes/{id}", (BangazonBackendDbContext db, int id) =>
+{
+    ProductType deleteProductType = db.ProductTypes.SingleOrDefault(pt => pt.Id == id);
+    if (deleteProductType == null)
+    {
+        return Results.NotFound();
+    }
+    db.ProductTypes.Remove(deleteProductType);
+    db.SaveChanges();
+    return Results.Ok(deleteProductType);
+});
 
 app.UseHttpsRedirection();
 
