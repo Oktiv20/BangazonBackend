@@ -78,6 +78,7 @@ public class BangazonBackendDbContext : DbContext
         modelBuilder.Entity<OrderedProduct>().HasData(new OrderedProduct[]
         {
             new OrderedProduct {Id = 1, ProductId = 1, OrderId = 1},
+            new OrderedProduct {Id = 1, ProductId = 2, OrderId = 1},
             new OrderedProduct {Id = 2, ProductId = 2, OrderId = 2},
             new OrderedProduct {Id = 3, ProductId = 3, OrderId = 3},
             new OrderedProduct {Id = 4, ProductId = 4, OrderId = 4},
