@@ -169,6 +169,56 @@ app.MapDelete("/api/products/{id}", (BangazonBackendDbContext db, int id) =>
     return Results.Ok(deleteProduct);
 });
 
+
+// ORDERS
+
+
+// GET ORDERS
+
+app.MapGet("/api/orders", (BangazonBackendDbContext db, int id) =>
+{
+    return db.Orders.ToList();
+});
+
+
+// GET ORDERS BY ID
+
+app.MapGet("/api/orders/{id}", (BangazonBackendDbContext db, int id) =>
+{
+    Order orders = db.Orders.SingleOrDefault(o => o.Id == id);
+    if (orders == null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(orders);
+});
+
+
+// POST ORDERS
+
+app.MapPost("/api/orders", (BangazonBackendDbContext db, Order order) =>
+{
+    db.Orders.Add(order);
+    db.SaveChanges();
+    return Results.Created($"/api/orders/{order.Id}", order);
+});
+
+
+// DELETE ORDERS
+
+app.MapDelete("/api/orders/{id}", (BangazonBackendDbContext db, int id) =>
+{
+    Order deleteOrder = db.Orders.SingleOrDefault(o => o.Id == id);
+    if (deleteOrder == null)
+    {
+        return Results.NotFound();
+    }
+    db.Orders.Remove(deleteOrder);
+    db.SaveChanges();
+    return Results.Ok(deleteOrder);
+});
+
+
 app.UseHttpsRedirection();
 
 app.Run();
